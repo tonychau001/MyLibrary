@@ -2,14 +2,23 @@ package com.tonychau.mylibrary;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+
 public class BookActivity extends AppCompatActivity {
+
+    public static final String BOOK_ID_KEY = "bookId";
+    private static final String TAG = "BookActivity";
 
     private TextView txtBookName, txtAuthor, txtPages, txtDescription;
     private Button btnAddToWantToRead, btnAddToAlreadyRead, btnAddToCurrentlyReading, btnAddToFavorite;
@@ -22,19 +31,143 @@ public class BookActivity extends AppCompatActivity {
 
         initView();
 
-        String desc = "Arguably a masterpiece of the Science Fiction genre, " + "\n" +
-                "Dune laid the foundation for many of the epics that followed its publication. " + "\n" +
-                "Herbert addresses overarching themes of family politics, religion, " +"\n" +
-                "environment, and the all-encompassing temptation of power, " +"\n" +
-                "all set against the backdrop of a futuristic civilization that, " +"\n" +
-                "at times, can be unflinchingly prophetic. " +"\n" +
-                "You will taste the sand in your mouth and soon be hungry for the next installment.";
-        //TODO: Get the data from recycler view in here
-        Book book = new Book(1, "Tony da best", "Tony C.", 1234,
-                "https://i.imgur.com/DvpvklR.png", "A story of Tony",
-                desc);
+        Intent intent = getIntent();
 
-        setData(book);
+        if(intent != null){
+            int bookId = intent.getIntExtra(BOOK_ID_KEY, -1);
+            if (bookId != -1) {
+                Book incomingBook = Utils.getInstance().getBookById(bookId);
+                if(incomingBook != null) {
+                    Log.d(TAG, "onCreate: " + incomingBook.getName());
+                    setData(incomingBook);
+
+                    handleAlreadyRead(incomingBook);
+                    handleWantToReadBooks(incomingBook);
+                    handleFavoriteBooks(incomingBook);
+                    handleCurrentlyReadingBooks(incomingBook);
+                }
+            }
+        }
+    }
+
+    private void handleFavoriteBooks(Book book) {
+        ArrayList<Book> favoriteBooks = Utils.getAlreadyReadBooks();
+
+        boolean existInFavoriteBooks = false;
+
+        for(Book b: favoriteBooks) {
+            if(b.getId() == book.getId()) {
+                existInFavoriteBooks = true;
+                break;
+            }
+        }
+        if(existInFavoriteBooks) {
+            btnAddToFavorite.setEnabled(false);
+        } else {
+            btnAddToFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(Utils.getInstance().addToFavorite(book)) {
+                        Toast.makeText(BookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(BookActivity.this, FavoriteActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(BookActivity.this, "Something Went Wrong, try again", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+    private void handleCurrentlyReadingBooks(Book book) {
+        ArrayList<Book> currentlyReadingBooks = Utils.getAlreadyReadBooks();
+
+        boolean existInCurrentlyReadingBooks = false;
+
+        for(Book b: currentlyReadingBooks) {
+            if(b.getId() == book.getId()) {
+                existInCurrentlyReadingBooks = true;
+                break;
+            }
+        }
+        if(existInCurrentlyReadingBooks) {
+            btnAddToCurrentlyReading.setEnabled(false);
+        } else {
+            btnAddToCurrentlyReading.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(Utils.getInstance().addToCurrentlyReading(book)) {
+                        Toast.makeText(BookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(BookActivity.this, CurrentlyReadingActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(BookActivity.this, "Something Went Wrong, try again", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    private void handleWantToReadBooks(final Book book) {
+        ArrayList<Book> wantToReadBooks = Utils.getAlreadyReadBooks();
+
+        boolean existInWantToReadBooks = false;
+
+        for(Book b: wantToReadBooks) {
+            if(b.getId() == book.getId()) {
+                existInWantToReadBooks = true;
+                break;
+            }
+        }
+        if(existInWantToReadBooks) {
+            btnAddToWantToRead.setEnabled(false);
+        } else {
+            btnAddToWantToRead.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(Utils.getInstance().addToWantToRead(book)) {
+                        Toast.makeText(BookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(BookActivity.this, WantToReadActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(BookActivity.this, "Something Went Wrong, try again", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Enable and disable button,
+     * Add the book to Already Read Book ArrayList
+     * @param book
+     */
+    private void handleAlreadyRead(Book book) {
+        ArrayList<Book> alreadyReadBooks = Utils.getAlreadyReadBooks();
+
+        boolean existInAlreadyReadBooks = false;
+
+        for(Book b: alreadyReadBooks) {
+            if(b.getId() == book.getId()) {
+                existInAlreadyReadBooks = true;
+                break;
+            }
+        }
+        if(existInAlreadyReadBooks) {
+            btnAddToAlreadyRead.setEnabled(false);
+        } else {
+            btnAddToAlreadyRead.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(Utils.getInstance().addToAlreadyRead(book)) {
+                        Toast.makeText(BookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(BookActivity.this, AlreadyReadyBookActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(BookActivity.this, "Something Went Wrong, try again", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 
     private void setData(Book book) {

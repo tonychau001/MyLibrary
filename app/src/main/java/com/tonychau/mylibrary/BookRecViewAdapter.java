@@ -1,5 +1,7 @@
 package com.tonychau.mylibrary;
 
+import static com.tonychau.mylibrary.BookActivity.BOOK_ID_KEY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.transition.TransitionManager;
@@ -53,6 +55,7 @@ public class BookRecViewAdapter extends RecyclerView.Adapter<BookRecViewAdapter.
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, BookActivity.class);
+                intent.putExtra(BOOK_ID_KEY,books.get(position).getId());
                 mContext.startActivity(intent);
             }
         });

@@ -25,14 +25,6 @@ public class AllBooksActivity extends AppCompatActivity {
         booksRecView.setAdapter(adapter);
         booksRecView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<Book> books = new ArrayList<>();
-
-        books.add(new Book(1, "Tony da best", "Tony C.", 1234,
-                "https://i.imgur.com/DvpvklR.png", "A story of Tony",
-                "A work of Longer desc"));
-        books.add(new Book(1, "Zazil da best", "Zazil M.", 1234,
-                "https://i.ibb.co/dDTcMRk/Bon-Bon-And-Luna.jpg",
-                "A story of Zazil", "A work of Longer desc"));
-        adapter.setBooks(books);
+        adapter.setBooks(Utils.getInstance().getAllBooks());
     }
 }
