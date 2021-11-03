@@ -12,23 +12,32 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyLibrary">
         <activity
-            android:name=".CurrentlyReadingActivity"
+            android:name=".WebsiteActivity"
             android:exported="false" />
+        <activity
+            android:name=".CurrentlyReadingActivity"
+            android:exported="false"
+            android:label="@string/activity_currently_reading"/>
         <activity
             android:name=".FavoriteActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/activity_favorite_books"/>
         <activity
             android:name=".WantToReadActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/activity_want_to_read"/>
         <activity
             android:name=".AlreadyReadyBookActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/activity_already_read"/>
         <activity
             android:name=".BookActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/activity_book"/>
         <activity
             android:name=".AllBooksActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:label="@string/activity_all_books"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
